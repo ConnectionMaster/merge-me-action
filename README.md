@@ -136,7 +136,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: 16
+          node-version: 20
           registry-url: https://npm.pkg.github.com
       - # This allows private dependencies from GitHub Packages to be installed.
         # Depending on the setup, it might be required to use a personal access
@@ -323,7 +323,7 @@ consume this package in your project.
 
 Minimal requirements to set up the project:
 
-- [Node.js](https://nodejs.org/en) v12, installation instructions can be found
+- [Node.js](https://nodejs.org/en) v14, installation instructions can be found
   on the official website, a recommended installation option is to use
   [Node Version Manager](https://github.com/creationix/nvm#readme). It can be
   installed in a

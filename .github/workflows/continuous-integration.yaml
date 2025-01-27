@@ -4,9 +4,6 @@ on:
   pull_request:
     branches:
       - master
-  push:
-    branches:
-      - master
 
 jobs:
   build:
@@ -14,20 +11,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2.4.0
+        uses: actions/checkout@v3
         with:
           persist-credentials: false
       - name: Setup Node.js
-        uses: actions/setup-node@v2.5.1
+        uses: actions/setup-node@v4.2.0
         with:
-          node-version: 15
-      - name: Cache dependencies
-        uses: actions/cache@v2.1.7
-        with:
-          key: npm-${{ hashFiles('./package-lock.json') }}
-          path: ~/.npm
-          restore-keys: |
-            npm-
+          cache: 'npm'
+          node-version: 20
+          registry-url: 'https://npm.pkg.github.com'
       - name: Install dependencies
         run: npm ci --ignore-scripts --no-audit --no-progress --prefer-offline
       - name: Build
@@ -41,20 +33,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2.4.0
+        uses: actions/checkout@v3
         with:
           persist-credentials: false
       - name: Setup Node.js
-        uses: actions/setup-node@v2.5.1
+        uses: actions/setup-node@v4.2.0
         with:
-          node-version: 15
-      - name: Cache dependencies
-        uses: actions/cache@v2.1.7
-        with:
-          key: npm-${{ hashFiles('./package-lock.json') }}
-          path: ~/.npm
-          restore-keys: |
-            npm-
+          cache: 'npm'
+          node-version: 20
+          registry-url: 'https://npm.pkg.github.com'
       - name: Install dependencies
         run: npm ci --ignore-scripts --no-audit --no-progress --prefer-offline
       - name: Format
@@ -65,20 +52,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2.4.0
+        uses: actions/checkout@v3
         with:
           persist-credentials: false
       - name: Setup Node.js
-        uses: actions/setup-node@v2.5.1
+        uses: actions/setup-node@v4.2.0
         with:
-          node-version: 15
-      - name: Cache dependencies
-        uses: actions/cache@v2.1.7
-        with:
-          key: npm-${{ hashFiles('./package-lock.json') }}
-          path: ~/.npm
-          restore-keys: |
-            npm-
+          cache: 'npm'
+          node-version: 20
+          registry-url: 'https://npm.pkg.github.com'
       - name: Install dependencies
         run: npm ci --ignore-scripts --no-audit --no-progress --prefer-offline
       - name: Lint
@@ -89,20 +71,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2.4.0
+        uses: actions/checkout@v3
         with:
           persist-credentials: false
       - name: Setup Node.js
-        uses: actions/setup-node@v2.5.1
+        uses: actions/setup-node@v4.2.0
         with:
-          node-version: 15
-      - name: Cache dependencies
-        uses: actions/cache@v2.1.7
-        with:
-          key: npm-${{ hashFiles('./package-lock.json') }}
-          path: ~/.npm
-          restore-keys: |
-            npm-
+          cache: 'npm'
+          node-version: 20
+          registry-url: 'https://npm.pkg.github.com'
       - name: Install dependencies
         run: npm ci --ignore-scripts --no-audit --no-progress --prefer-offline
       - name: Spellcheck
@@ -113,22 +90,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2.4.0
+        uses: actions/checkout@v3
         with:
           persist-credentials: false
       - name: Setup Node.js
-        uses: actions/setup-node@v2.5.1
+        uses: actions/setup-node@v4.2.0
         with:
-          node-version: 12
+          cache: 'npm'
+          node-version: 20
       - name: Install latest npm
         run: npm install --global npm@latest
-      - name: Cache dependencies
-        uses: actions/cache@v2.1.7
-        with:
-          key: npm-${{ hashFiles('./package-lock.json') }}
-          path: ~/.npm
-          restore-keys: |
-            npm-
       - name: Install dependencies
         run: npm ci --ignore-scripts --no-audit --no-progress --prefer-offline
       - name: Test
@@ -143,22 +114,33 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2.4.0
+        uses: actions/checkout@v3
         with:
           persist-credentials: false
       - name: Setup Node.js
-        uses: actions/setup-node@v2.5.1
+        uses: actions/setup-node@v4.2.0
         with:
-          node-version: 15
-      - name: Cache dependencies
-        uses: actions/cache@v2.1.7
-        with:
-          key: npm-${{ hashFiles('./package-lock.json') }}
-          path: ~/.npm
-          restore-keys: |
-            npm-
+          cache: 'npm'
+          node-version: 20
+          registry-url: 'https://npm.pkg.github.com'
       - name: Install dependencies
         run: npm ci --ignore-scripts --no-audit --no-progress --prefer-offline
       - name: Types
         run: npm run types
+    timeout-minutes: 5
+  merge-me:
+    needs:
+      - build
+      - format
+      - lint
+      - spellcheck
+      - test
+      - types
+    name: Merge me!
+    runs-on: ubuntu-latest
+    steps:
+      - name: Merge me!
+        uses: ridedott/merge-me-action@master
+        with:
+          GITHUB_TOKEN: ${{ secrets.DOTTBOTT_TOKEN }}
     timeout-minutes: 5
